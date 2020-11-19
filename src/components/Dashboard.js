@@ -8,24 +8,24 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
+// import { fetchGroups, addStudent } from "../store/actions/authActions";
 import { Link, useHistory } from "react-router-dom";
+import { connect } from "react-redux";
 
-export default function Dashboard() {
+function Dashboard({ currentUser }) {
   const [groups, setGroups] = useState([]);
-  const { currentUser, fetchGroups, addStudent } = useAuth();
   const history = useHistory();
 
   async function sumbitStudent() {
-    const std = await addStudent();
-    console.log(std);
+    // const std = await addStudent();
+    // console.log(std);
   }
 
   async function getGroups() {
-    const groups = await fetchGroups();
-    const newState = [];
-    groups.forEach((gr) => newState.push({ id: gr.id, ...gr.data() }));
-    setGroups(newState);
+    // const groups = await fetchGroups();
+    // const newState = [];
+    // groups.forEach((gr) => newState.push({ id: gr.id, ...gr.data() }));
+    // setGroups(newState);
   }
 
   useEffect(() => {
@@ -52,3 +52,7 @@ export default function Dashboard() {
     </Container>
   );
 }
+
+const mapState = ({ currentUser }) => ({ currentUser });
+
+export default connect(mapState)(Dashboard)

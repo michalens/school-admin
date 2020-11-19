@@ -1,10 +1,9 @@
 import React from "react"
+import { connect } from "react-redux"
 import { Route, Redirect } from "react-router-dom"
-import { useAuth } from "../contexts/AuthContext"
 
-export default function PrivateRoute({ component: Component, ...rest }) {
-  const { currentUser } = useAuth()
-
+function PrivateRoute({ currentUser, component: Component, ...rest }) {
+console.log(currentUser)
   return (
     <Route
       {...rest}
@@ -14,3 +13,12 @@ export default function PrivateRoute({ component: Component, ...rest }) {
     ></Route>
   )
 }
+
+const mapState = ({ auth }) => {
+  console.log(auth)
+  return {
+    currentUser: auth.currentUser
+  }
+ };
+
+export default connect(mapState)(PrivateRoute)
