@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react"
+import React, { useState } from "react"
 import { Form, Button, Card, Alert } from "react-bootstrap"
 import { login } from "../store/actions/authActions"
-import { Link, useHistory } from "react-router-dom"
+import { Link, Redirect, useHistory } from "react-router-dom"
 import { connect } from "react-redux";
 
 function Login({ currentUser, login }) {
@@ -32,6 +32,11 @@ function Login({ currentUser, login }) {
   function handleFormChange({ target }) {
     setFormData(prev => ({...prev, [target.name]: target.value }))
   }
+
+  if (currentUser) {
+    return <Redirect to="/" />
+  }
+
   return (
     <>
       <Card>

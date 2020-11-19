@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react"
+import React, { useState } from "react"
 import { Form, Button, Card, Alert } from "react-bootstrap"
 import { connect } from "react-redux"
 
@@ -7,9 +7,8 @@ import { Link, Redirect, useHistory } from "react-router-dom"
 import { signup } from "../store/actions/authActions"
 
 function Signup({ signup, currentUser }) {
-  const emailRef = useRef()
-  const passwordRef = useRef()
-  const passwordConfirmRef = useRef()
+  const [ formData, setFormData ] = useState({ email: "", password: "", passwordConfirm: "" });
+
 
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
@@ -18,20 +17,24 @@ function Signup({ signup, currentUser }) {
   async function handleSubmit(e) {
     e.preventDefault()
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+    if (formData.password !== formData.passwordConfirm) {
       return setError("Passwords do not match")
     }
 
     try {
       setError("")
       setLoading(true)
-      signup(emailRef.current.value, passwordRef.current.value)
+      signup(formData.email, formData.password)
       history.push("/")
     } catch {
       setError("Failed to create an account")
     }
 
     setLoading(false)
+  }
+
+  function handleFormChange({ target }) {
+    setFormData(prev => ({...prev, [target.name]: target.value }))
   }
 
   if (currentUser) {
@@ -47,15 +50,15 @@ function Signup({ signup, currentUser }) {
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
+              <Form.Control type="email" name="email" value={formData.email} onChange={handleFormChange} required />
             </Form.Group>
             <Form.Group id="password">
               <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={passwordRef} required />
+              <Form.Control type="password" name="password" value={formData.password} onChange={handleFormChange} required />
             </Form.Group>
             <Form.Group id="password-confirm">
               <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={passwordConfirmRef} required />
+              <Form.Control type="password" name="passwordConfirm" value={formData.passwordConfirm} onChange={handleFormChange} required />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
               Sign Up
