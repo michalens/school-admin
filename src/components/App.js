@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
 import Signup from "./Signup";
 import { Container } from "react-bootstrap";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
@@ -7,24 +7,18 @@ import Login from "./Login";
 import PrivateRoute from "./PrivateRoute";
 import ForgotPassword from "./ForgotPassword";
 // import UpdateProfile from "./UpdateProfile";
-import { useStore } from "react-redux";
+import { connect, useStore } from "react-redux";
 import { auth } from "../firebase";
 import * as actionTypes from "../store/actions/actionTypes";
+import { fetchUser } from "../store/actions/authActions";
 
-function App() {
+function App({ fetchUser }) {
   const { dispatch } = useStore();
 
-  // useEffect(() => {
-  //   const unsubscribe = auth.onAuthStateChanged((user) => {
-  //     if (user) {
-  //       dispatch({ type: actionTypes.SET_USER, payload: user });
-  //     } else {
-  //       dispatch({ type: actionTypes.REMOVE_USER });
-  //     }
-  //   });
+  useLayoutEffect(() => {
+    fetchUser()
+  }, [])
 
-  //   return unsubscribe;
-  // }, []);
 
   return (
     <Container
@@ -46,4 +40,4 @@ function App() {
   );
 }
 
-export default App;
+export default connect(null, { fetchUser })(App);

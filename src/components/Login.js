@@ -19,8 +19,6 @@ function Login({ currentUser, login }) {
       setError("")
       setLoading(true)
       const log = await login(formData.email, formData.password)
-
-      console.log('loggedin', log)
       history.push("/")
     } catch {
       setError("Failed to log in")

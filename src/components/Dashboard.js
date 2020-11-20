@@ -8,12 +8,11 @@ import {
   Row,
   Col,
 } from "react-bootstrap";
-// import { fetchGroups, addStudent } from "../store/actions/authActions";
+import { fetchGroups } from "../store/actions/studentsActions";
 import { Link, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
-function Dashboard({ currentUser }) {
-  const [groups, setGroups] = useState([]);
+function Dashboard({ currentUser, groups, fetchGroups }) {
   const history = useHistory();
 
   async function sumbitStudent() {
@@ -29,7 +28,7 @@ function Dashboard({ currentUser }) {
   }
 
   useEffect(() => {
-    getGroups();
+    fetchGroups();
   }, []);
 
   return (
@@ -40,7 +39,7 @@ function Dashboard({ currentUser }) {
             <Card.Body>
               <h2 className="text-center mb-4">Add user</h2>
               <Form>
-                <Form.Control as="select">
+                <Form.Control as="select" size="10">
                   {groups?.map(gr => <option key={gr.id}>{gr.name}</option>)}
                 </Form.Control>
               </Form>
@@ -53,6 +52,9 @@ function Dashboard({ currentUser }) {
   );
 }
 
-const mapState = ({ currentUser }) => ({ currentUser });
+const mapState = ({ auth, students }) => ({
+   currentUser : auth.currentUser,
+   groups: students.groups
+});
 
-export default connect(mapState)(Dashboard)
+export default connect(mapState, { fetchGroups })(Dashboard)

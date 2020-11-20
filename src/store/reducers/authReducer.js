@@ -6,8 +6,7 @@ const initialState = {
 
 export default function authReducer(state = initialState, action) {
     switch(action.type) {
-        case actionTypes.SET_USER:
-            console.log(action)
+        case actionTypes.AUTH_SUCCESS:
             return { currentUser: action.payload };
             break;
         case actionTypes.REMOVE_USER:

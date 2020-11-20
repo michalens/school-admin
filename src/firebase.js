@@ -14,7 +14,9 @@ const app = firebase.initializeApp({
 
 export const auth = app.auth();
 
-
+export const getAuthenticationStatus = () => {
+  return localStorage.getItem("isAuthenticated")
+};
 
 export const db = app.firestore();
 

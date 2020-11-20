@@ -1,22 +1,48 @@
 import { auth } from "../../firebase";
 import * as actionTypes from './actionTypes';
 
+const authSuccess = (user) => {
+    return {
+        type: actionTypes.AUTH_SUCCESS,
+        payload: user,
+    }
+}
+
+export const fetchUser = () => async dispatch => {
+    try {
+      await auth.onAuthStateChanged(currentUser => {
+        if (currentUser) {
+          localStorage.setItem("isAuthenticated", true)
+          dispatch(authSuccess(currentUser.toJSON()))
+        } else {
+          localStorage.removeItem("isAuthenticated")
+          dispatch(authSuccess(null))
+        }
+      })
+    } catch (error) {
+      throw error
+    }
+  }
+
 export function signup(email, password) {
     return async dispatch => {
-        const newUser = await auth.createUserWithEmailAndPassword(email, password);
-        dispatch({ type: actionTypes.SET_USER, payload: newUser })
+        await auth.createUserWithEmailAndPassword(email, password);
+        dispatch(authSuccess(auth.currentUser.toJSON()))
     }
 }
 
 export function login(email, password) {
   return async dispatch => {
-    const newUser = await auth.signInWithEmailAndPassword(email, password);
-    dispatch({ type: actionTypes.SET_USER, payload: newUser })
-}
+        await auth.signInWithEmailAndPassword(email, password);
+        dispatch(authSuccess(auth.currentUser.toJSON()))
+    }
 }
 
 export function logout() {
-  return auth.signOut();
+    return async dispatch => {
+        await auth.signOut()
+        dispatch(authSuccess(auth.currentUser))
+    }
 }
 
 export function resetPassword(email) {
