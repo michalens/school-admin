@@ -1,18 +1,18 @@
 import React, { useState } from "react"
 import { Form, Button, Card, Alert } from "react-bootstrap"
 import { connect } from "react-redux"
+import { useFirebase } from "react-redux-firebase";
 
-import { Link, Redirect, useHistory } from "react-router-dom"
+import { Link, Redirect } from "react-router-dom"
 
-import { signup } from "../store/actions/authActions"
 
-function Signup({ signup, currentUser }) {
+function Signup({ auth }) {
   const [ formData, setFormData ] = useState({ email: "", password: "", passwordConfirm: "" });
 
+  const firebase = useFirebase();
 
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-  const history = useHistory()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -24,8 +24,7 @@ function Signup({ signup, currentUser }) {
     try {
       setError("")
       setLoading(true)
-      signup(formData.email, formData.password)
-      history.push("/")
+      firebase.createUser(formData)
     } catch {
       setError("Failed to create an account")
     }
@@ -37,7 +36,7 @@ function Signup({ signup, currentUser }) {
     setFormData(prev => ({...prev, [target.name]: target.value }))
   }
 
-  if (currentUser) {
+  if (auth.uid) {
     return <Redirect to="/" />
   }
 
@@ -73,6 +72,6 @@ function Signup({ signup, currentUser }) {
   )
 }
 
-const mapState = ({ auth }) => ({ currentUser: auth.currentUser});
+const mapState = ({ firebase }) => ({ auth: firebase.auth });
 
-export default connect(mapState, { signup })(Signup)
+export default connect(mapState)(Signup)

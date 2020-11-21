@@ -10,14 +10,14 @@ import ForgotPassword from "./ForgotPassword";
 import { connect, useStore } from "react-redux";
 import { auth } from "../firebase";
 import * as actionTypes from "../store/actions/actionTypes";
-import { fetchUser } from "../store/actions/authActions";
+// import { fetchUser } from "../store/actions/authActions";
 
-function App({ fetchUser }) {
+function App() {
   const { dispatch } = useStore();
 
-  useLayoutEffect(() => {
-    fetchUser()
-  }, [])
+  // useLayoutEffect(() => {
+  //   fetchUser()
+  // }, [])
 
 
   return (
@@ -40,4 +40,4 @@ function App({ fetchUser }) {
   );
 }
 
-export default connect(null, { fetchUser })(App);
+export default connect()(App);

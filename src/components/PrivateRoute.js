@@ -2,21 +2,20 @@ import React from "react"
 import { connect } from "react-redux"
 import { Route, Redirect } from "react-router-dom"
 
-function PrivateRoute({ currentUser, component: Component, ...rest }) {
+function PrivateRoute({ auth, component: Component, ...rest }) {
   return (
     <Route
       {...rest}
       render={props => {
-        return currentUser ? <Component {...props} /> : <Redirect to="/login" />
+        return auth.uid ? <Component {...props} /> : <Redirect to="/login" />
       }}
     ></Route>
   )
 }
 
-const mapState = ({ auth }) => {
-  console.log(auth)
+const mapState = ({ firebase }) => {
   return {
-    currentUser: auth.currentUser
+    auth: firebase.auth
   }
  };
 

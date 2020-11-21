@@ -1,37 +1,29 @@
 import React, { useState } from "react"
 import { Form, Button, Card, Alert } from "react-bootstrap"
-import { login } from "../store/actions/authActions"
-import { Link, Redirect, useHistory } from "react-router-dom"
+import { useFirebase } from 'react-redux-firebase';
+import { Link, Redirect } from "react-router-dom"
 import { connect } from "react-redux";
 
-function Login({ currentUser, login }) {
+function Login({ auth }) {
   const [ formData, setFormData ] = useState({ email: "", password: "" });
 
-
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const history = useHistory()
+  const firebase = useFirebase();
 
   async function handleSubmit(e) {
     e.preventDefault()
 
     try {
-      setError("")
-      setLoading(true)
-      const log = await login(formData.email, formData.password)
-      history.push("/")
-    } catch {
-      setError("Failed to log in")
+      firebase.login(formData)
+    } catch (e){
+      console.log(e)
     }
-
-    setLoading(false)
   }
 
   function handleFormChange({ target }) {
     setFormData(prev => ({...prev, [target.name]: target.value }))
   }
 
-  if (currentUser) {
+  if (auth.uid) {
     return <Redirect to="/" />
   }
 
@@ -40,7 +32,6 @@ function Login({ currentUser, login }) {
       <Card>
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
@@ -50,7 +41,7 @@ function Login({ currentUser, login }) {
               <Form.Label>Password</Form.Label>
               <Form.Control name="password" type="password" value={formData.password} onChange={handleFormChange} required />
             </Form.Group>
-            <Button disabled={loading} className="w-100" type="submit">
+            <Button className="w-100" type="submit">
               Log In
             </Button>
           </Form>
@@ -66,6 +57,12 @@ function Login({ currentUser, login }) {
   )
 }
 
-const mapState = ({ auth }) => ({ currentUser: auth.currentUser })
+const mapState = (state) => {
+  return{
+    authError: state.auth.authError,
+    auth: state.firebase.auth
+  }
+}
 
-export default connect(mapState, { login })(Login)
+
+export default connect(mapState)(Login)
